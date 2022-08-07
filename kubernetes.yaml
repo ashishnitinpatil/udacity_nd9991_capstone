@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nd991-capstone-deployment
+  labels:
+    app: nd991-capstone-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nd991-capstone-app
+  template:
+    metadata:
+      labels:
+        app: nd991-capstone-app
+    spec:
+      containers:
+      - name: nd991-capstone-container
+        image: 541016292997.dkr.ecr.us-east-1.amazonaws.com/nd991_capstone
+        imagePullPolicy: Always
+        ports:
+          - name: web
+            containerPort: 5000
+      imagePullSecrets:
+          - name: regcred
