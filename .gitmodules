@@ -1,0 +1,3 @@
+[submodule "keras-flask-deploy-webapp"]
+	path = keras-flask-deploy-webapp
+	url = https://github.com/mtobeiyf/keras-flask-deploy-webapp.git
