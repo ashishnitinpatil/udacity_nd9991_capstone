@@ -21,3 +21,11 @@ You can find a detailed [project rubric, here](https://review.udacity.com/#!/rub
 2. Run in Kubernetes:  
   - `./upload_docker.sh`
   - `./run_kubernetes.sh`
+
+### Create AWS EKS Cluster
+
+We will use [eksctl](https://eksctl.io/) to create an AWS EKS Cluster, which in itself uses AWS Cloudformation.
+
+Run via make - `make cluster-create`
+To check on cluster status - `make cluster-info`
+Cleanup cluster - `make cluster-delete`
