@@ -4,16 +4,17 @@ jobs:
   build:
     docker:
       - image: tensorflow/tensorflow:2.5.1
-    working_directory: ./keras-flask-deploy-webapp
     steps:
       - checkout
       - restore_cache:
           keys:
-            - 'app-dependencies-{{ checksum "requirements.txt" }}'
+            - 'app-dependencies-{{ checksum "./keras-flask-deploy-webapp/requirements.txt" }}'
             - app-dependencies-
       - run:
           name: install dependencies
           command: |
+            cd ./keras-flask-deploy-webapp
+            apt-get install python3-venv
             python3 -m venv venv
             . venv/bin/activate
             pip install --upgrade pip
@@ -24,10 +25,11 @@ jobs:
       - save_cache:
           paths:
             - ./venv
-          key: 'app-dependencies-{{ checksum "requirements.txt" }}'
+          key: 'app-dependencies-{{ checksum "./keras-flask-deploy-webapp/requirements.txt" }}'
       - run:
           name: run lint
           command: |
+            cd ./keras-flask-deploy-webapp
             . venv/bin/activate
             pylint --disable=R,C,W1203,W1202,E0611 app.py
             hadolint Dockerfile
