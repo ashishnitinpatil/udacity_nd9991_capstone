@@ -5,7 +5,7 @@ jobs:
     docker:
       - image: tensorflow/tensorflow:2.5.1
     steps:
-      - checkout:
+      - checkout
       - run:
           name: install system dependencies
           command: |
