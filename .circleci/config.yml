@@ -9,8 +9,7 @@ jobs:
       - run:
           name: install system dependencies
           command: |
-            apt-get update
-            apt-get install git python3-venv
+            apt update && apt install -y git python3-venv wget
             # Install hadolint
             wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v1.16.3/hadolint-Linux-x86_64
             chmod +x /bin/hadolint
