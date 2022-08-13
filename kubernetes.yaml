@@ -1,3 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nd991-capstone-loadbalancer
+spec:
+  type: LoadBalancer
+  selector:
+    app: nd991-capstone-app
+  ports:
+    - name: nd991-capstone-http-port
+      protocol: TCP
+      port: 80
+      targetPort: web
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -5,7 +19,12 @@ metadata:
   labels:
     app: nd991-capstone-app
 spec:
-  replicas: 1
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 50%
+      maxSurge: 50%
   selector:
     matchLabels:
       app: nd991-capstone-app
