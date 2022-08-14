@@ -47,7 +47,7 @@ jobs:
 
   build-and-push-image:
     docker:
-      - image: amazon/aws-cli
+      - image: cimg/aws:2022.06
     steps:
       - checkout
       - aws-ecr/build-and-push-image:
