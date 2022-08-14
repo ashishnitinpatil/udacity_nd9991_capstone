@@ -89,8 +89,8 @@ jobs:
           name: install system dependencies
           command: |
             sudo apt update && sudo apt install -y git curl
-            curl -o kubectl https://s3.us-west-2.amazonaws.com/amazon-eks/1.23.7/2022-06-29/bin/linux/amd64/kubectl
-            chmod +x kubectl
+            sudo curl -o /bin/kubectl https://s3.us-west-2.amazonaws.com/amazon-eks/1.23.7/2022-06-29/bin/linux/amd64/kubectl
+            sudo chmod +x /bin/kubectl
       - checkout_all
       - run:
           name: authenticate
@@ -99,8 +99,8 @@ jobs:
       - run:
           name: deploy
           command: |
-            ./kubectl version
-            ./kubectl apply -f kubernetes.yaml
+            kubectl version
+            kubectl apply -f kubernetes.yaml
 
 workflows:
   default:
