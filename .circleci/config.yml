@@ -52,7 +52,7 @@ jobs:
       - checkout
       - aws-ecr/build-and-push-image:
           region: us-east-1
-          account-url: AWS_ECR_ACCOUNT_URL
+          registry-id: AWS_ECR_REGISTRY_ID
           repo: nd991_capstone
           path: ./keras-flask-deploy-webapp
           tag: "latest,${CIRCLE_SHA1}"
