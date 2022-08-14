@@ -23,8 +23,8 @@ jobs:
             git submodule update --recursive --init
       - restore_cache:
           keys:
-            - 'app-dependencies-{{ checksum "./keras-flask-deploy-webapp/requirements.txt" }}'
-            - app-dependencies-
+            - 'app-{{ checksum "./keras-flask-deploy-webapp/requirements.txt" }}'
+            - app-
       - run:
           name: install python dependencies
           command: |
@@ -35,8 +35,8 @@ jobs:
             pip install -r requirements.txt
       - save_cache:
           paths:
-            - ./venv
-          key: 'app-dependencies-{{ checksum "./keras-flask-deploy-webapp/requirements.txt" }}'
+            - .
+          key: 'app-{{ checksum "./keras-flask-deploy-webapp/requirements.txt" }}'
       - run:
           name: run lint
           command: |
@@ -50,12 +50,26 @@ jobs:
       - image: cimg/aws:2022.06
     steps:
       - checkout
-      - aws-ecr/build-and-push-image:
-          region: us-east-1
-          registry-id: AWS_ECR_REGISTRY_ID
-          repo: nd991_capstone
-          path: ./keras-flask-deploy-webapp
-          tag: "latest,${CIRCLE_SHA1}"
+      - run:
+          name: authenticate
+          command: |
+            aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ECR_REGISTRY_ID
+      - restore_cache:
+          keys:
+            - 'app-{{ checksum "./keras-flask-deploy-webapp/requirements.txt" }}'
+            - app-
+      - run:
+          name: build and tag image
+          command: |
+            REPO=nd991_capstone
+            docker build -t $REPO ./keras-flask-deploy-webapp
+            docker image tag $REPO $AWS_ECR_REGISTRY_ID/$REPO:latest
+            docker image tag $REPO $AWS_ECR_REGISTRY_ID/$REPO:$CIRCLE_SHA1
+      - run:
+          name: push image to ECR
+          command:
+            docker push $AWS_ECR_REGISTRY_ID/$REPO:latest
+            docker push $AWS_ECR_REGISTRY_ID/$REPO:$CIRCLE_SHA1
 
 workflows:
   default:
