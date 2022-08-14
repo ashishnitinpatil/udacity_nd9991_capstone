@@ -1,7 +1,10 @@
 version: 2.1
 
+orbs:
+  aws-ecr: circleci/aws-ecr@8.1.2
+
 jobs:
-  build:
+  lint:
     docker:
       - image: tensorflow/tensorflow:2.5.1
     steps:
@@ -41,3 +44,19 @@ jobs:
             . venv/bin/activate
             pylint --disable=R,C,W1203,W1202,E0611 app.py
             hadolint Dockerfile
+
+  build_and_push_image:
+    steps:
+      - aws-ecr/build-and-push-image:
+          region: "${AWS_DEFAULT_REGION}"
+          registry-id: 541016292997.dkr.ecr.us-east-1.amazonaws.com
+          repo: nd991_capstone
+          path: ./keras-flask-deploy-webapp
+          tag: "latest,${CIRCLE_SHA1}"
+
+workflows:
+  default:
+    jobs:
+      - lint
+      - build_and_push_image:
+          requires: [lint]
