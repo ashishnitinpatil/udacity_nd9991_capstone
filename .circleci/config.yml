@@ -6,10 +6,6 @@ commands:
     steps:
       - checkout
       - run:
-          name: install system dependencies
-          command: |
-            sudo apt update && sudo apt install -y git
-      - run:
           name: checkout submodules
           command: |
             git submodule sync --recursive
@@ -24,7 +20,7 @@ jobs:
       - run:
           name: install system dependencies
           command: |
-            apt update && apt install -y python3-venv wget
+            apt update && apt install -y git python3-venv wget
             # Install hadolint
             wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v1.16.3/hadolint-Linux-x86_64
             chmod +x /bin/hadolint
@@ -56,6 +52,10 @@ jobs:
     docker:
       - image: cimg/aws:2022.06
     steps:
+      - run:
+          name: install system dependencies
+          command: |
+            sudo apt update && sudo apt install -y git
       - checkout_all
       - run:
           name: authenticate
