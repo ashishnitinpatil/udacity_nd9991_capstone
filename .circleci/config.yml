@@ -74,6 +74,7 @@ jobs:
       - run:
           name: push image to ECR
           command: |
+            REPO=nd991_capstone
             docker push $AWS_ECR_REGISTRY_ID/$REPO:latest
             docker push $AWS_ECR_REGISTRY_ID/$REPO:$CIRCLE_SHA1
 
