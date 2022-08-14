@@ -8,7 +8,7 @@ commands:
       - run:
           name: install system dependencies
           command: |
-            apt update && apt install -y git
+            sudo apt update && sudo apt install -y git
       - run:
           name: checkout submodules
           command: |
