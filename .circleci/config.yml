@@ -47,7 +47,7 @@ jobs:
 
   build-and-push-image:
     docker:
-      - image: ubuntu-2204:2022.04.1
+      - image: amazon/aws-cli
     steps:
       - checkout
       - aws-ecr/build-and-push-image:
