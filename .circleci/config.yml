@@ -1,30 +1,37 @@
 version: 2.1
 
-orbs:
-  aws-ecr: circleci/aws-ecr@8.1.2
+commands:
+  checkout_all:
+    description: Since we're using submodules, need an extended way to checkout all code
+    steps:
+      - checkout
+      - run:
+          name: install system dependencies
+          command: |
+            apt update && apt install -y git
+      - run:
+          name: checkout submodules
+          command: |
+            git submodule sync --recursive
+            git submodule update --recursive --init
 
 jobs:
   lint:
     docker:
       - image: tensorflow/tensorflow:2.5.1
     steps:
-      - checkout
+      - checkout_all
       - run:
           name: install system dependencies
           command: |
-            apt update && apt install -y git python3-venv wget
+            apt update && apt install -y python3-venv wget
             # Install hadolint
             wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v1.16.3/hadolint-Linux-x86_64
             chmod +x /bin/hadolint
-      - run:
-          name: checkout submodules
-          command: |
-            git submodule sync --recursive
-            git submodule update --recursive --init
       - restore_cache:
           keys:
-            - 'app-{{ checksum "./keras-flask-deploy-webapp/requirements.txt" }}'
-            - app-
+            - 'app-dependencies-{{ checksum "./keras-flask-deploy-webapp/requirements.txt" }}'
+            - app-dependencies-
       - run:
           name: install python dependencies
           command: |
@@ -49,15 +56,11 @@ jobs:
     docker:
       - image: cimg/aws:2022.06
     steps:
-      - checkout
+      - checkout_all
       - run:
           name: authenticate
           command: |
             aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ECR_REGISTRY_ID
-      - restore_cache:
-          keys:
-            - 'app-{{ checksum "./keras-flask-deploy-webapp/requirements.txt" }}'
-            - app-
       - run:
           name: build and tag image
           command: |
