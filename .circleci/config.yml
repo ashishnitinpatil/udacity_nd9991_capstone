@@ -16,7 +16,6 @@ jobs:
     docker:
       - image: tensorflow/tensorflow:2.5.1
     steps:
-      - checkout_all
       - run:
           name: install system dependencies
           command: |
@@ -24,6 +23,7 @@ jobs:
             # Install hadolint
             wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v1.16.3/hadolint-Linux-x86_64
             chmod +x /bin/hadolint
+      - checkout_all
       - restore_cache:
           keys:
             - 'app-dependencies-{{ checksum "./keras-flask-deploy-webapp/requirements.txt" }}'
