@@ -73,7 +73,7 @@ jobs:
             docker image tag $REPO $AWS_ECR_REGISTRY_ID/$REPO:$CIRCLE_SHA1
       - run:
           name: push image to ECR
-          command:
+          command: |
             docker push $AWS_ECR_REGISTRY_ID/$REPO:latest
             docker push $AWS_ECR_REGISTRY_ID/$REPO:$CIRCLE_SHA1
 
